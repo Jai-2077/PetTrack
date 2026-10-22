@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% from '_m.html' import csrf %}
+{% block title %}SD import{% endblock %}
+{% block wrapclass %}narrow{% endblock %}
+{% block content %}
+<section class="panel">
+  <h1>Import SD log</h1>
+  <p class="muted">Taps that happened while the laptop was off are on the SD card in <code>PETLOG.TXT</code>. Put the card in the laptop, pick that file, import. Taps already seen live are skipped, so re-importing is safe.</p>
+  <form method="post" enctype="multipart/form-data" class="stack">
+    {{ csrf() }}
+    <input type="hidden" name="tz_offset" id="tz-offset" value="0">
+    <div class="field"><label for="log">PETLOG.TXT</label><input id="log" name="log" type="file" accept=".txt,.csv,text/plain" required></div>
+    <div class="field"><label for="anchor">Time of the newest tap in the file</label>
+      <input id="anchor" name="anchor" type="datetime-local">
+      <div class="muted small">The SD card has no clock, only uptime. Leave empty to use <b>now</b> (card pulled right after the last tap). Taps from earlier power-ons get "time unknown".</div></div>
+    <button class="btn primary" type="submit">Import</button>
+  </form>
+</section>
+
+{% if result %}
+<section class="panel">
+  <h2>Result</h2>
+  <dl class="kv">
+    <dt>Lines read</dt><dd>{{ result.total }}</dd>
+    <dt>New taps</dt><dd><b>{{ result.new }}</b></dd>
+    <dt>Already known</dt><dd>{{ result.duplicates }}</dd>
+    <dt>Power-on sessions</dt><dd>{{ result.sessions }}</dd>
+    <dt>Time unknown</dt><dd>{{ result.unknown_time }}</dd>
+    <dt>Bad lines skipped</dt><dd>{{ result.invalid }}</dd>
+  </dl>
+  {% if result.bad_samples %}<pre class="small">{{ result.bad_samples|join('\n') }}</pre>{% endif %}
+  {% if result.unregistered %}
+  <h3>Unregistered tags in this log</h3>
+  <ul class="list">{% for u in result.unregistered %}<li><code>{{ u }}</code><a class="btn small" href="{{ url_for('main.register', uid=u) }}">Register</a></li>{% endfor %}</ul>
+  {% endif %}
+  <p><a href="{{ url_for('main.scans', source='sd') }}">View imported scans →</a></p>
+</section>
+{% endif %}
+{% endblock %}

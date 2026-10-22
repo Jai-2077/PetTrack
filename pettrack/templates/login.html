@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% from '_m.html' import csrf %}
+{% block title %}Log in{% endblock %}
+{% block wrapclass %}narrow{% endblock %}
+{% block content %}
+<div class="panel center">
+  <div class="logo">🐾</div>
+  <h1>PetTrack</h1>
+  <p class="muted">Sign in to manage pet records.</p>
+  <form method="post" class="stack">
+    {{ csrf() }}
+    <div class="field"><label for="pw">Password</label><input id="pw" name="password" type="password" required autofocus autocomplete="current-password"></div>
+    <button class="btn primary block" type="submit">Sign in</button>
+  </form>
+  <p class="small muted">Found a pet? Open the link on its tag instead.</p>
+</div>
+{% endblock %}

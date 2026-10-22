@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% from '_m.html' import avatar %}
+{% block title %}Tag card · {{ pet.name }}{% endblock %}
+{% block content %}
+<p class="noprint"><button class="btn primary" type="button" data-print>Print card</button>
+  <a class="btn" href="{{ url_for('main.pet', uid=pet.uid) }}">Back</a></p>
+<section class="idcard">
+  <div class="idcard-left">
+    {{ avatar(pet, 'lg') }}
+    <h2 class="pet-name">{{ pet.name }}</h2>
+    <p class="pet-sub">{{ pet.species }}{% if pet.breed %} · {{ pet.breed }}{% endif %}</p>
+    <p class="small">Owner: <b class="pet-name-sm">{{ pet.owner_name }}</b>{% if pet.public_phone %}<br>{{ pet.owner_phone }}{% endif %}</p>
+    <p class="tiny pet-meta">Tag {{ pet.uid }}</p>
+  </div>
+  <div class="idcard-right">
+    <div class="qr">{{ qr|safe }}</div>
+    <p class="tiny">Scan if found</p>
+  </div>
+</section>
+<p class="muted small noprint">QR opens <code>{{ url }}</code>. {% if not cfg.cloud_url and not cfg.public_url and cfg.mode == 'local' %}This points at this laptop; set PETTRACK_CLOUD_URL (or PETTRACK_PUBLIC_URL) so finders anywhere can open it.{% endif %}</p>
+{% endblock %}

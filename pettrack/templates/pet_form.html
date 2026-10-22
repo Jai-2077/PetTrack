@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% from '_m.html' import field, area, avatar, csrf %}
+{% block title %}{{ 'Register tag' if creating else 'Edit ' ~ pet.name }}{% endblock %}
+{% block wrapclass %}narrow{% endblock %}
+{% block content %}
+<section class="panel">
+  <h1>{{ 'Register this tag' if creating else 'Edit ' ~ pet.name }}</h1>
+  <p class="muted small">Tag <code>{{ uid }}</code>{% if creating %} has no profile yet. Fill this in once; it stays linked to the tag.{% endif %}</p>
+
+  <form method="post" enctype="multipart/form-data" class="stack">
+    {{ csrf() }}
+    <fieldset><legend>Pet</legend>
+      <div class="field">
+        <label for="f-photo">Photo</label>
+        {% if pet and pet.has_photo %}<div class="row">{{ avatar(pet, 'md') }}<label class="check"><input type="checkbox" name="remove_photo" value="1"> Remove photo</label></div>{% endif %}
+        <input id="f-photo" name="photo" type="file" accept="image/jpeg,image/png,image/webp">
+        {% if errors.get('photo') %}<div class="err">{{ errors['photo'] }}</div>{% endif %}
+        <img id="photo-preview" class="avatar md" alt="" hidden>
+      </div>
+      <div class="grid2">
+        {{ field('name', 'Name', form, errors, required=true, ph='Bruno') }}
+        {{ field('species', 'Species', form, errors, required=true, ph='Dog', list='species-list') }}
+        {{ field('breed', 'Breed', form, errors, ph='Golden Retriever') }}
+        <div class="field"><label for="f-gender">Gender</label>
+          <select id="f-gender" name="gender">{% for g in ['Unknown', 'Male', 'Female'] %}<option {{ 'selected' if form.get('gender', 'Unknown') == g }}>{{ g }}</option>{% endfor %}</select></div>
+        {{ field('birth_date', 'Birth date', form, errors, type='date') }}
+        {{ field('weight_kg', 'Weight (kg)', form, errors, type='number', ph='12.5') }}
+        {{ field('color', 'Colour / markings', form, errors) }}
+      </div>
+      <datalist id="species-list"><option>Dog</option><option>Cat</option><option>Bird</option><option>Rabbit</option><option>Other</option></datalist>
+    </fieldset>
+
+    <fieldset><legend>Medical</legend>
+      {{ area('allergies', 'Allergies', form, errors, ph='e.g. Penicillin') }}
+      {{ area('conditions', 'Known conditions', form, errors, ph='e.g. Hip dysplasia') }}
+      {{ area('medications', 'Current medications', form, errors) }}
+      {{ field('vet_name', 'Regular vet', form, errors) }}
+      {{ area('notes', 'Notes', form, errors, rows=3) }}
+    </fieldset>
+
+    <fieldset><legend>Owner</legend>
+      <div class="grid2">
+        {{ field('owner_name', 'Owner name', form, errors, required=true) }}
+        {{ field('owner_phone', 'Phone', form, errors, type='tel', required=true, ph='+91 98765 43210') }}
+        {{ field('owner_email', 'Email', form, errors, type='email') }}
+        {{ field('owner_city', 'City / area', form, errors, ph='Vijayawada') }}
+      </div>
+      {{ field('owner_address', 'Address (private, never shown publicly)', form, errors) }}
+      <label class="check"><input type="checkbox" name="public_phone" value="1" {{ 'checked' if form.get('public_phone') in (1, '1', 'on', True) }}> Show phone number on the public finder page</label>
+    </fieldset>
+
+    <div class="row"><button class="btn primary" type="submit">{{ 'Save pet' if creating else 'Save changes' }}</button>
+      <a class="btn" href="{{ url_for('main.pet', uid=uid) if not creating else url_for('main.dashboard') }}">Cancel</a></div>
+  </form>
+</section>
+{% endblock %}

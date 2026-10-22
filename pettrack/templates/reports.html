@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% from '_m.html' import when, csrf %}
+{% block title %}Finder reports{% endblock %}
+{% block content %}
+<section class="panel">
+  <div class="between"><h1>Finder reports</h1>
+    <a class="small" href="{{ url_for('main.reports', all=0 if show_all else 1) }}">{{ 'Hide resolved' if show_all else 'Show resolved' }}</a></div>
+  <p class="muted small">Messages left by people who opened a tag's public page.</p>
+  {% for r in reports %}
+  <article class="visit {{ 'dim' if r.resolved }}">
+    <div class="between"><b><a href="{{ url_for('main.pet', uid=r.pet_uid) }}">{{ r.pet_name or r.pet_uid }}</a></b><span class="muted small">{{ when(r.created_at) }}</span></div>
+    <p>{{ r.finder_name or 'Anonymous' }}{% if r.finder_phone %} · <a href="tel:{{ r.finder_phone }}">{{ r.finder_phone }}</a>{% endif %}{% if r.location %} · 📍 {{ r.location }}{% endif %}</p>
+    {% if r.message %}<p>{{ r.message|nl2br }}</p>{% endif %}
+    {% if not r.resolved %}<form method="post" action="{{ url_for('main.report_resolve', rid=r.id) }}">{{ csrf() }}<button class="btn small" type="submit">Mark handled</button></form>{% endif %}
+  </article>
+  {% else %}<p class="muted">No reports.</p>{% endfor %}
+</section>
+{% endblock %}

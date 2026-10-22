@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% from '_m.html' import avatar %}
+{% block title %}Pets{% endblock %}
+{% block content %}
+<section class="panel">
+  <form method="get" class="row wrap-row">
+    <input name="q" value="{{ q }}" placeholder="Search name, owner, phone, UID, breed" aria-label="Search">
+    <select name="species" aria-label="Species">
+      <option value="">All species</option>
+      {% for s in species_list %}<option value="{{ s }}" {{ 'selected' if s|lower == species|lower }}>{{ s }}</option>{% endfor %}
+    </select>
+    <label class="check"><input type="checkbox" name="lost" value="1" {{ 'checked' if lost }}> Lost only</label>
+    <button class="btn" type="submit">Filter</button>
+  </form>
+</section>
+
+<p class="muted small">{{ total }} pet{{ 's' if total != 1 }}
+  · <a href="{{ url_for('main.export_csv') }}">Export CSV</a>
+  · <a href="{{ url_for('main.export_backup') }}">Full backup (JSON)</a></p>
+
+<div class="cards">
+  {% for p in pets %}
+  <a class="card pet-card" href="{{ url_for('main.pet', uid=p.uid) }}">
+    {{ avatar(p, 'md') }}
+    <div>
+      <b class="pet-name">{{ p.name }}</b> {% if p.is_lost %}<span class="pill bad">LOST</span>{% endif %}
+      <div class="muted small pet-sub">{{ p.species }}{% if p.breed %} · {{ p.breed }}{% endif %}</div>
+      <div class="muted small pet-meta">{{ p.owner_name }} · {{ p.owner_phone }}</div>
+    </div>
+  </a>
+  {% else %}
+  <p class="muted">No pets match.</p>
+  {% endfor %}
+</div>
+
+{% if pages > 1 %}
+<nav class="pager">
+  {% if page > 1 %}<a class="btn small" href="{{ url_for('main.pets', q=q, species=species, lost=1 if lost else None, page=page-1) }}">← Prev</a>{% endif %}
+  <span class="muted">Page {{ page }} / {{ pages }}</span>
+  {% if page < pages %}<a class="btn small" href="{{ url_for('main.pets', q=q, species=species, lost=1 if lost else None, page=page+1) }}">Next →</a>{% endif %}
+</nav>
+{% endif %}
+{% endblock %}

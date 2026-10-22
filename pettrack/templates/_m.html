@@ -1,0 +1,31 @@
+{% macro avatar(p, size='') -%}
+{% if p.has_photo %}<img class="avatar {{ size }}" src="{{ url_for('main.photo', uid=p.uid, v=p.updated_at) }}" alt="" loading="lazy">{% else %}<span class="avatar {{ size }} ph" aria-hidden="true">{{ {'dog':'🐕','cat':'🐈','bird':'🐦','rabbit':'🐇'}.get((p.species or '')|lower, '🐾') }}</span>{% endif %}
+{%- endmacro %}
+
+{% macro when(iso) -%}
+{% if iso %}<time class="lt" datetime="{{ iso }}">{{ iso[:16]|replace('T', ' ') }} UTC</time>{% else %}—{% endif %}
+{%- endmacro %}
+
+{% macro scan_time(s) -%}
+{% if s.time_quality == 'unknown' %}<span class="muted">time unknown</span>{% else %}{{ when(s.occurred_at) }}{% if s.time_quality == 'estimated' %} <span class="muted" title="Estimated from the SD log">~</span>{% endif %}{% endif %}
+{%- endmacro %}
+
+{% macro field(name, label, form, errors, type='text', required=false, ph='', list='', max='') -%}
+<div class="field">
+  <label for="f-{{ name }}">{{ label }}{% if required %} <span class="req">*</span>{% endif %}</label>
+  <input id="f-{{ name }}" name="{{ name }}" type="{{ type }}" value="{{ form.get(name) if form.get(name) is not none else '' }}"
+    placeholder="{{ ph }}" {% if required %}required{% endif %} {% if list %}list="{{ list }}"{% endif %}
+    {% if type == 'number' %}step="any" min="0"{% endif %} {% if type == 'date' and max %}max="{{ max }}"{% endif %}>
+  {% if errors.get(name) %}<div class="err">{{ errors[name] }}</div>{% endif %}
+</div>
+{%- endmacro %}
+
+{% macro area(name, label, form, errors, rows=2, ph='') -%}
+<div class="field">
+  <label for="f-{{ name }}">{{ label }}</label>
+  <textarea id="f-{{ name }}" name="{{ name }}" rows="{{ rows }}" placeholder="{{ ph }}">{{ form.get(name) or '' }}</textarea>
+  {% if errors.get(name) %}<div class="err">{{ errors[name] }}</div>{% endif %}
+</div>
+{%- endmacro %}
+
+{% macro csrf() -%}<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">{%- endmacro %}

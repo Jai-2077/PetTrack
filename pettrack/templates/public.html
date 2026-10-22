@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% from '_m.html' import avatar, csrf %}
+{% block title %}{{ pet.name }}{% endblock %}
+{% block wrapclass %}narrow{% endblock %}
+{% block content %}
+<section class="panel center {{ 'lost' if pet.is_lost }}">
+  {% if pet.is_lost %}<div class="banner bad big"><b>⚠ {{ pet.name }} is LOST</b><br>Please contact the owner right away.</div>{% else %}<span class="pill amber">Found me? Thank you!</span>{% endif %}
+  <div class="center">{{ avatar(pet, 'xl') }}</div>
+  <h1 class="pet-title">{{ pet.name }}</h1>
+  <p class="muted pet-sub">{{ pet.species }}{% if pet.breed %} · {{ pet.breed }}{% endif %}{% if pet.color %} · {{ pet.color }}{% endif %}</p>
+  {% if pet.allergies or pet.medications %}
+  <p class="small critical-note">Medical note: {% if pet.allergies %}allergic to {{ pet.allergies }}.{% endif %} {% if pet.medications %}Needs medication.{% endif %}</p>
+  {% endif %}
+  <hr>
+  <p class="label">Owner</p>
+  <p class="owner"><b class="pet-name-sm">{{ pet.owner_name }}</b>{% if pet.owner_city %} · {{ pet.owner_city }}{% endif %}</p>
+  {% if pet.public_phone %}
+  <a class="btn primary block big" href="tel:{{ pet.owner_phone }}">📞 Call {{ pet.owner_phone }}</a>
+  {% else %}
+  <p class="muted">The owner prefers messages. Use the form below.</p>
+  {% endif %}
+</section>
+
+<section class="panel" id="report">
+  <h2>Let the owner know</h2>
+  <p class="muted small">Tell them where you found {{ pet.name }}. Leave a phone number so they can reach you.</p>
+  <form method="post" action="{{ url_for('main.public_found', uid=pet.uid) }}" class="stack">
+    {{ csrf() }}
+    <div class="field"><label for="fn">Your name</label><input id="fn" name="finder_name" maxlength="80" autocomplete="name"></div>
+    <div class="field"><label for="fp">Your phone</label><input id="fp" name="finder_phone" type="tel" maxlength="24" autocomplete="tel"></div>
+    <div class="field"><label for="fl">Where is the pet now?</label><input id="fl" name="location" maxlength="200" placeholder="Street, landmark, area"></div>
+    <div class="field"><label for="fm">Message</label><textarea id="fm" name="message" rows="3" maxlength="500"></textarea></div>
+    <button class="btn block" type="submit">Send to owner</button>
+  </form>
+</section>
+{% endblock %}

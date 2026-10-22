@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% from '_m.html' import when, csrf %}
+{% block title %}Sync{% endblock %}
+{% block content %}
+<section class="panel">
+  <h1>Sync</h1>
+  {% if cfg.mode == 'cloud' %}
+    <p>This is the <b>cloud</b> instance. Laptops push and pull through <code>/api/sync/*</code> using the shared key.</p>
+  {% elif not enabled %}
+    <p>Running <b>local only</b>. Set <code>PETTRACK_CLOUD_URL</code> and <code>PETTRACK_SYNC_KEY</code> to sync with a hosted copy. Everything keeps working offline.</p>
+  {% else %}
+    <dl class="kv">
+      <dt>Cloud</dt><dd><code>{{ cfg.cloud_url }}</code></dd>
+      <dt>Status</dt><dd data-sync-status>{% if state.online %}<span class="pill ok">online</span>{% elif state.online is none %}<span class="pill">not tried yet</span>{% else %}<span class="pill bad">offline, using local data</span>{% endif %}</dd>
+      <dt>Last sync</dt><dd>{{ when(state.last_ok) }}</dd>
+      <dt>Last run</dt><dd>{{ state.pushed }} pushed · {{ state.pulled }} pulled</dd>
+      {% if state.last_error %}<dt>Last error</dt><dd class="critical">{{ state.last_error }}</dd>{% endif %}
+      <dt>Pull cursor</dt><dd>{{ cursor }}</dd>
+    </dl>
+    <div class="row">
+      <form method="post" action="{{ url_for('main.sync_now') }}">{{ csrf() }}<button class="btn primary" type="submit">Sync now</button></form>
+      <form method="post" action="{{ url_for('main.sync_reset') }}" data-confirm="Re-download everything from the cloud on the next sync?">{{ csrf() }}<button class="btn small" type="submit">Reset cursor</button></form>
+      <form method="post" action="{{ url_for('main.sync_resend') }}" data-confirm="Upload every record to the cloud again?">{{ csrf() }}<button class="btn small" type="submit">Re-upload everything</button></form>
+    </div>
+  {% endif %}
+</section>
+<section class="panel">
+  <h2>Waiting to upload</h2>
+  <dl class="kv">{% for t, n in counts.items() %}<dt>{{ t|replace('_', ' ') }}</dt><dd>{{ n }}</dd>{% endfor %}</dl>
+  <p class="muted small">Writes always land in the local database first. Rows marked here upload automatically every {{ cfg.sync_interval }} s once the cloud is reachable. Newest edit wins on conflicts.</p>
+</section>
+{% endblock %}

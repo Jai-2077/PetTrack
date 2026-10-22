@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% from '_m.html' import scan_time %}
+{% block title %}Scans{% endblock %}
+{% block content %}
+<section class="panel">
+  <form method="get" class="row wrap-row">
+    <input name="uid" value="{{ uid }}" placeholder="Filter by UID" aria-label="UID">
+    <select name="source" aria-label="Source">
+      <option value="">All sources</option>
+      {% for s, label in [('live', 'Live scanner'), ('sd', 'SD import'), ('manual', 'Manual lookup'), ('web', 'Public page report')] %}
+      <option value="{{ s }}" {{ 'selected' if source == s }}>{{ label }}</option>{% endfor %}
+    </select>
+    <button class="btn" type="submit">Filter</button>
+  </form>
+</section>
+<section class="panel">
+  <div class="tablewrap"><table class="t">
+    <thead><tr><th>When</th><th>Tag</th><th>Pet</th><th>Source</th></tr></thead>
+    <tbody>
+    {% for s in scans %}
+      <tr><td>{{ scan_time(s) }}</td><td><code>{{ s.uid }}</code></td>
+        <td>{% if s.pet_name %}<a href="{{ url_for('main.pet', uid=s.uid) }}">{{ s.pet_name }}</a>{% else %}<a href="{{ url_for('main.register', uid=s.uid) }}">Unregistered · register</a>{% endif %}</td>
+        <td><span class="pill">{{ s.source }}</span></td></tr>
+    {% else %}<tr><td colspan="4" class="muted">No scans.</td></tr>{% endfor %}
+    </tbody></table></div>
+</section>
+{% endblock %}

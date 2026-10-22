@@ -1,0 +1,522 @@
+/* =============================================================
+   PetTrack — Organic / tactile design system
+   Phase 1: design tokens + global theme
+   -------------------------------------------------------------
+   Palette: warm linen canvas, espresso ink, terracotta / sage / ochre
+   Type:    Fraunces (display) · Plus Jakarta Sans (body) · Space Grotesk (data)
+   ============================================================= */
+
+/* ---------- 1. Tokens : light (warm paper / linen) ---------- */
+:root{
+  /* surfaces */
+  --paper:#F7F4EE;          /* primary canvas — warm natural linen */
+  --panel:#FFFDF8;          /* raised surface */
+  --panel-2:#F2EDE2;        /* sunken / secondary surface */
+  --shell:#211E1A;          /* deep espresso chrome (header / nav) */
+  --shell-2:#2B2721;        /* chrome secondary */
+  --on-shell:#F2EDE4;       /* text on chrome */
+
+  /* ink */
+  --ink:#1C1A17;            /* primary text — espresso charcoal, never #000 */
+  --ink-2:#6B655B;          /* warm muted secondary text */
+  --ink-3:#8C8578;          /* faintest warm tone */
+
+  /* lines */
+  --line:#E3DCCD;           /* warm hairline */
+  --line-strong:#CFC5B2;
+
+  /* accents */
+  --clay:#C85A32;           /* terracotta clay */
+  --clay-deep:#A3441F;      /* text-safe clay */
+  --clay-soft:#F3E0D7;
+  --sage:#5B7055;            /* muted forest sage */
+  --sage-deep:#445540;
+  --sage-soft:#E2E8DC;
+  --ochre:#D98E32;          /* warm ochre */
+  --ochre-deep:#9A6413;
+  --ochre-soft:#F8E9D2;
+
+  /* status */
+  --ok-bg:#E7EDE1;  --ok-ink:#3D5639;
+  --warn-bg:#FAEEDA; --warn-ink:#855310;
+  --bad-bg:#F8E4DC;  --bad-ink:#9C3D1E;
+
+  /* filled control surfaces - clay family with ink-safe text (AA on both themes) */
+  --clay-btn:#B94F26;       /* primary fill */
+  --clay-btn-deep:#9C3D1E; /* destructive fill */
+  --on-clay:#FFF4EC;        /* warm paper text on clay */
+  --card-paper:#FFFDF8;     /* printed card stock */
+
+  /* ultra-subtle structural tints */
+  --row-tint:rgba(40,35,25,.02);
+  --scroll-thumb:rgba(107,101,91,.32);
+  --scroll-thumb-hover:rgba(107,101,91,.52);
+  --scrim:rgba(28,26,23,.45);
+  --on-shell-muted:#CFC7B6;
+  --on-shell-ok:#DCE7D6;
+  --on-shell-warn:#F0CE9C;
+  --on-shell-bad:#F3C7B5;
+  --on-shell-subtle:#BDB6A8;
+  --print-paper:#FFFDF8;
+
+  /* type */
+  --font-display:"Fraunces","Iowan Old Style",Georgia,"Times New Roman",serif;
+  --font-body:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --font-data:"Space Grotesk",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+
+  /* geometry */
+  --r:10px; --r-sm:6px; --r-lg:14px;
+
+  /* organic, subtly asymmetric radii */
+  --r-a:18px 22px 19px 24px;
+  --r-b:24px 18px 22px 17px;
+  --r-c:22px 19px 24px 18px;
+  --r-soft:14px 16px 13px 15px;
+  --r-press:12px 14px 11px 13px;   /* button instrument curvature */
+
+  /* delicate translucent ink outlines */
+  --edge:rgba(40,35,25,.08);
+  --edge-strong:rgba(40,35,25,.14);
+  --edge-ink:rgba(107,101,91,.14);   /* ink-2 at ~14% — divider tint */
+  --edge-on-shell:rgba(242,237,228,.12);
+
+  /* warm ambient diffusion (no harsh black shadows) */
+  --diffuse:0 1px 3px rgba(28,26,23,.04), 0 8px 24px -4px rgba(40,30,20,.06);
+  --diffuse-lift:0 2px 6px rgba(28,26,23,.05), 0 16px 34px -12px rgba(40,30,20,.12);
+  --sheen:inset 0 1px 0 rgba(255,255,255,.6);
+  --shadow:var(--diffuse);
+
+  /* phase 3 — interactive physics */
+  --paper-warm:#FAF7F1;                  /* sunken paper field for inputs */
+  --wash:rgba(40,35,25,.04);              /* soft paper fill on hover */
+  --ink-line:rgba(40,35,25,.16);          /* fine input boundary */
+  --focus-ring:rgba(200,90,50,.14);       /* clay ink-wash halo */
+  --spring:cubic-bezier(.34,1.56,.64,1);  /* spring-like curve */
+  --ease:cubic-bezier(.4,0,.2,1);         /* organic breath curve */
+  --caret:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5l5-5' fill='none' stroke='%236B655B' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  color-scheme:light;
+}
+
+/* ---------- 2. Tokens : dark (deep rich shale) ---------- */
+@media (prefers-color-scheme:dark){
+  :root{
+    --paper:#191B1A;
+    --panel:#212422;
+    --panel-2:#282B29;
+    --shell:#121413;
+    --shell-2:#1A1D1B;
+    --on-shell:#E8E2D6;
+
+    --ink:#EDE8DE;
+    --ink-2:#A6A096;
+    --ink-3:#8A8479;
+
+    --line:#363A37;
+    --line-strong:#474C48;
+
+    --clay:#D9744C;
+    --clay-deep:#E48A63;
+    --clay-soft:#3A241C;
+    --sage:#8FA787;
+    --sage-deep:#A9C09F;
+    --sage-soft:#242B22;
+    --ochre:#E4A757;
+    --ochre-deep:#EFC083;
+    --ochre-soft:#33281A;
+
+    --ok-bg:#232C21;  --ok-ink:#9FC79B;
+    --warn-bg:#2F2717; --warn-ink:#E0B36A;
+    --bad-bg:#31201A;  --bad-ink:#E09173;
+
+    /* dark theme: lighter clay fills take ink text, not paper text */
+    --clay-btn:#D9744C;
+    --clay-btn-deep:#E48A63;
+    --on-clay:#231A16;
+    --row-tint:rgba(238,230,214,.02);
+    --scroll-thumb:rgba(166,160,150,.30);
+    --scroll-thumb-hover:rgba(166,160,150,.50);
+    --scrim:rgba(10,9,8,.55);
+    --on-shell-muted:#BDB6A8;
+    --on-shell-ok:#DCE7D6;
+    --on-shell-warn:#F0CE9C;
+    --on-shell-bad:#F3C7B5;
+    --on-shell-subtle:#A6A096;
+
+    --edge:rgba(238,230,214,.10);
+    --edge-strong:rgba(238,230,214,.18);
+    --edge-ink:rgba(166,160,150,.16);
+    --edge-on-shell:rgba(238,230,214,.12);
+    --diffuse:0 1px 3px rgba(16,14,10,.28), 0 10px 28px -8px rgba(16,14,10,.48);
+    --diffuse-lift:0 2px 8px rgba(16,14,10,.32), 0 18px 40px -14px rgba(16,14,10,.62);
+    --sheen:inset 0 1px 0 rgba(255,255,255,.04);
+    --shadow:var(--diffuse);
+
+    /* phase 3 — interactive physics (dark) */
+    --paper-warm:#1B1E1C;
+    --wash:rgba(238,230,214,.05);
+    --ink-line:rgba(238,230,214,.16);
+    --focus-ring:rgba(217,116,76,.18);
+    --caret:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5l5-5' fill='none' stroke='%23A6A096' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    color-scheme:dark;
+  }
+  .avatar.ph{background:var(--sage-soft)}
+}
+
+/* ---------- 3. Base ---------- */
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font:15px/1.55 var(--font-body);
+  font-feature-settings:"ss01" 1;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+
+/* ---------- 4. Tactile grain overlay (2–3% opacity) ---------- */
+body::before{
+  content:"";
+  position:fixed; inset:0;
+  z-index:9999; pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size:180px 180px;
+  opacity:.03;
+  mix-blend-mode:multiply;
+}
+@media (prefers-color-scheme:dark){
+  body::before{opacity:.05;mix-blend-mode:overlay}
+}
+
+/* ---------- 5. Typography ---------- */
+h1,h2,h3{
+  font-family:var(--font-display);
+  font-weight:600; font-variation-settings:"SOFT" 40,"WONK" 1;
+  letter-spacing:-.01em;
+  margin:0 0 .4em; line-height:1.18;
+}
+h1{font-size:1.85rem} h2{font-size:1.25rem} h3{font-size:1.02rem}
+a{color:var(--sage-deep);text-underline-offset:2px}
+@media (prefers-color-scheme:dark){a{color:var(--sage-deep)}}
+code,pre{font-family:var(--font-data);font-size:.88em}
+pre{background:var(--panel-2);padding:12px;border-radius:var(--r-soft);border:1px solid var(--edge);overflow:auto}
+hr{border:0;border-top:1px dashed var(--edge-strong);margin:16px 0}
+.muted{color:var(--ink-2)} .small{font-size:.85rem} .tiny{font-size:.72rem;color:var(--ink-2);margin:2px 0}
+.center{text-align:center} .grow{flex:1;min-width:0} .inline{display:inline;margin-left:8px}
+[hidden]{display:none!important}
+
+/* ---------- 6. Chrome (grounded header + natural tab dock) ---------- */
+.top{position:sticky;top:0;z-index:5;background:var(--shell);color:var(--on-shell);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--edge-on-shell)}
+.brand{font:600 1.35rem var(--font-display);color:var(--on-shell);text-decoration:none;letter-spacing:.05em}
+.chips{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+/* header chips live on the espresso shell — same washes, lightened for contrast */
+.chip{font-family:var(--font-data);font-size:.75rem;font-weight:600;display:inline-flex;align-items:center;padding:3px 10px;border-radius:99px;background:var(--shell-2);color:var(--on-shell-muted);border:1px solid var(--edge-on-shell);white-space:nowrap}
+.chip.ok{background:rgba(143,167,135,.16);color:var(--on-shell-ok);border-color:rgba(143,167,135,.34)} .chip.warn{background:rgba(228,167,87,.16);color:var(--on-shell-warn);border-color:rgba(228,167,87,.34)} .chip.bad{background:rgba(200,90,50,.18);color:var(--on-shell-bad);border-color:rgba(200,90,50,.38)} .chip.off{background:rgba(242,237,228,.06);color:var(--on-shell-subtle);border-color:var(--edge-on-shell)}
+.linkbtn{background:none;border:0;color:inherit;text-decoration:underline;cursor:pointer;font:inherit;padding:0}
+.top .linkbtn{color:var(--on-shell-muted);font-size:.8rem}
+
+/* tab dock: sits on the canvas, dividers tinted with ink at low opacity */
+.nav{display:flex;gap:0;overflow-x:auto;background:var(--paper);padding:0 8px;scrollbar-width:none;border-bottom:1px solid var(--edge-ink)}
+.nav a{color:var(--ink-2);text-decoration:none;padding:12px 14px;font-size:.9rem;white-space:nowrap;border-bottom:2px solid transparent;box-shadow:inset 1px 0 0 var(--edge-ink)}
+.nav a:first-child{box-shadow:none}
+.nav a:hover{color:var(--ink)}
+.nav a[aria-current=page]{color:var(--ink);font-weight:600;border-bottom-color:var(--ochre)}
+.wrap{max-width:980px;margin:0 auto;padding:18px 14px 60px}
+.wrap.narrow{max-width:640px}
+.foot{text-align:center;color:var(--ink-2);font-size:.75rem;padding:18px;border-top:1px solid var(--edge);margin-top:18px}
+
+/* ---------- 7. Panels, grids, stats ---------- */
+.panel{background:var(--panel);border:1px solid var(--edge);border-radius:var(--r-a);padding:18px;margin-bottom:14px;box-shadow:var(--diffuse),var(--sheen)}
+.panel.hero{display:flex;gap:16px;align-items:center}
+/* organic breath instead of a harsh ripple blink */
+.pulse{width:44px;height:44px;border-radius:50%;background:var(--sage);flex:none;transform-origin:center;animation:breath 2.8s var(--ease) infinite}
+.pulse.on{background:var(--sage)} .pulse.off{background:var(--clay);animation:none;opacity:.6}
+@keyframes breath{
+  0%,100%{opacity:.55;transform:scale(.94)}
+  50%{opacity:1;transform:scale(1.04)}
+}
+.logo{font-size:2.4rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid2 > .panel:nth-child(2n){border-radius:var(--r-b)}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+.span3{grid-column:1/-1}
+@media(max-width:640px){.grid2,.grid3{grid-template-columns:1fr}.panel.hero{flex-direction:row}}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:16px}
+.stat{background:var(--panel);border:1px solid var(--edge);border-radius:var(--r-c);padding:14px 12px;text-decoration:none;color:var(--ink);display:flex;flex-direction:column;gap:4px;box-shadow:var(--diffuse),var(--sheen);transition:transform .15s var(--spring),box-shadow .15s ease,border-color .15s ease}
+.stat:hover{transform:translateY(-2px);border-color:var(--edge-strong);box-shadow:var(--diffuse-lift),var(--sheen)}
+.stat b{font:600 2rem var(--font-display);line-height:1.05;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.stat span{font-size:.72rem;text-transform:uppercase;letter-spacing:.09em;color:var(--ink-2)}
+.stat.bad{border-color:rgba(200,90,50,.45);background:var(--bad-bg)} .stat.warn{border-color:rgba(217,142,50,.45);background:var(--warn-bg)}
+
+/* ---------- 8. Lists & cards ---------- */
+.list{list-style:none;margin:0;padding:0}
+.list li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 0;border-top:1px solid var(--edge)}
+.list li:first-child{border-top:0}
+.list a{text-decoration:none;color:inherit}
+.who{display:flex;gap:10px;align-items:center}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--edge);border-radius:var(--r-b);padding:14px;text-decoration:none;color:inherit;display:flex;gap:14px;align-items:center;box-shadow:var(--diffuse),var(--sheen);transition:transform .15s var(--spring),box-shadow .15s ease,border-color .15s ease}
+.card:hover{border-color:var(--edge-strong);box-shadow:var(--diffuse-lift),var(--sheen);transform:translateY(-2px)}
+.cards .card:nth-child(2n){border-radius:var(--r-c)}
+.avatar{border-radius:50%;object-fit:cover;background:var(--sage-soft);color:var(--sage-deep);display:inline-flex;align-items:center;justify-content:center;flex:none;width:44px;height:44px;font-size:1.4rem}
+.avatar.sm{width:36px;height:36px;font-size:1.1rem} .avatar.md{width:56px;height:56px} .avatar.lg{width:84px;height:84px;font-size:2.4rem} .avatar.xl{width:128px;height:128px;font-size:3.6rem;margin:12px 0 4px}
+.avatar.ph{background:var(--panel-2)}
+.head{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+
+/* ---------- 8b. Pet cards, scan summaries, vitals ---------- */
+.pet-card{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center;text-align:left}
+.pet-name{font-family:var(--font-display);font-size:1.22rem;font-weight:600;letter-spacing:-.01em;color:var(--ink);display:inline-block;vertical-align:middle}
+.pet-name-sm{font-family:var(--font-display);font-size:1.02rem;font-weight:600;letter-spacing:-.005em;color:var(--ink)}
+.pet-title{font-size:2.1rem;font-weight:600;letter-spacing:-.018em;line-height:1.1}
+.pet-sub{font-size:.82rem;color:var(--ink-2);line-height:1.45}
+.pet-meta{font-family:var(--font-data);font-size:.78rem;color:var(--ink-2);letter-spacing:.01em;margin-top:3px}
+.scan-name{font-family:var(--font-display);font-size:1rem;font-weight:600;color:var(--ink)}
+.scan-meta{font-family:var(--font-data);font-size:.76rem;color:var(--ink-2)}
+.vital{font-family:var(--font-display);font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+
+/* ---------- 9. Buttons (physical instruments) ---------- */
+/* ghost / secondary: clear body, fine ink edge, soft paper fill on hover */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  font:600 .92rem var(--font-body);
+  padding:9px 14px;
+  border-radius:var(--r-press);
+  border:1px solid var(--edge-strong);
+  background:transparent;
+  color:var(--ink);
+  cursor:pointer;text-decoration:none;
+  transition:transform .15s var(--spring),box-shadow .15s ease,border-color .15s ease,background-color .15s ease,color .15s ease;
+}
+.btn:hover{border-color:var(--edge-strong);background:var(--wash)}
+.btn:active{transform:translateY(1px);box-shadow:none}
+
+/* primary: pressed-clay instrument with a solid base edge */
+.btn.primary,.btn-primary{
+  background:var(--clay-btn);border-color:var(--clay-btn);color:var(--on-clay);
+  box-shadow:0 2px 0 rgba(100,40,20,.25), 0 6px 14px -3px rgba(200,90,50,.25);
+}
+.btn.primary:hover,.btn-primary:hover{
+  background:var(--clay-btn);border-color:var(--clay-btn);
+  transform:translateY(-1px);
+  box-shadow:0 3px 0 rgba(100,40,20,.25), 0 10px 20px -6px rgba(200,90,50,.30);
+}
+.btn.primary:active,.btn-primary:active{
+  transform:translateY(1.5px);
+  box-shadow:0 1px 0 rgba(100,40,20,.25), 0 3px 6px -2px rgba(200,90,50,.20);
+}
+
+/* destructive: deeper clay, heavier base edge */
+.btn.danger{
+  background:var(--clay-btn-deep);border-color:var(--clay-btn-deep);color:var(--on-clay);
+  box-shadow:0 2px 0 rgba(70,25,10,.28), 0 6px 14px -3px rgba(200,90,50,.22);
+}
+.btn.danger:hover{background:var(--clay-btn-deep);border-color:var(--clay-btn-deep);transform:translateY(-1px);
+  box-shadow:0 3px 0 rgba(70,25,10,.28), 0 10px 20px -6px rgba(200,90,50,.26)}
+.btn.danger:active{transform:translateY(1.5px);
+  box-shadow:0 1px 0 rgba(70,25,10,.28), 0 3px 6px -2px rgba(200,90,50,.18)}
+
+/* aliases for the generic secondary / ghost naming */
+.btn-secondary,.btn-ghost{background:transparent;border:1px solid var(--edge-strong)}
+.btn-secondary:hover,.btn-ghost:hover{background:var(--wash)}
+
+.btn.small{padding:5px 10px;font-size:.8rem} .btn.block{display:flex;width:100%} .btn.big{padding:14px;font-size:1.05rem}
+summary.btn{list-style:none;display:inline-flex} summary::-webkit-details-marker{display:none}
+details.add{margin-top:14px;padding:12px;border:1px dashed var(--edge-strong);border-radius:var(--r-soft)}
+
+/* ---------- 10. Forms (tactile inputs) ---------- */
+label{display:block;font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-2);margin-bottom:4px;font-weight:600}
+.req{color:var(--clay-deep)}
+
+/* sunken paper field + fine ink boundary */
+input,select,textarea{
+  width:100%;font:inherit;color:var(--ink);
+  padding:9px 11px;
+  background:var(--paper-warm);
+  border:1px solid var(--ink-line);
+  border-radius:10px 12px 11px 13px;
+  transition:border-color .15s ease,box-shadow .15s ease,background-color .15s ease;
+}
+input::placeholder,textarea::placeholder{color:var(--ink-3)}
+input:hover,select:hover,textarea:hover{border-color:var(--edge-strong)}
+
+/* no blue/purple halos — clay ink-wash double ring */
+input:focus,select:focus,textarea:focus{
+  outline:none;
+  background-color:var(--panel);   /* background-color, not the shorthand — keeps the select caret */
+  border-color:var(--clay);
+  box-shadow:0 0 0 3px var(--focus-ring);
+}
+input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
+.btn:focus-visible{outline:2px solid rgba(200,90,50,.65);outline-offset:2px}
+a:focus-visible{outline:2px solid rgba(200,90,50,.65);outline-offset:2px;border-radius:3px}
+
+/* selects: no native chrome, custom ink caret */
+select{
+  -webkit-appearance:none;appearance:none;
+  padding-right:32px;
+  background-image:var(--caret);
+  background-repeat:no-repeat;
+  background-position:right 11px center;
+  background-size:11px 7px;
+  cursor:pointer;
+}
+option{background:var(--panel);color:var(--ink)}
+input[type=checkbox],input[type=radio]{width:auto;accent-color:var(--clay)}
+.check{display:inline-flex;gap:8px;align-items:center;text-transform:none;font-size:.9rem;letter-spacing:0;color:var(--ink);font-weight:500}
+.field{margin-bottom:12px} .err{color:var(--clay-deep);font-size:.8rem;margin-top:3px}
+fieldset{border:1px solid var(--edge);border-radius:var(--r-soft);padding:12px 14px;margin:0}
+legend{font:700 .8rem var(--font-body);text-transform:uppercase;letter-spacing:.06em;color:var(--sage-deep);padding:0 6px}
+.stack>*+*{margin-top:14px}
+.row{display:flex;gap:8px;align-items:center} .row input{flex:1} .wrap-row{flex-wrap:wrap} .wrap-row input{min-width:200px} .wrap-row select{width:auto}
+.between{display:flex;justify-content:space-between;align-items:center;gap:10px}
+
+/* ---------- 11. Pills, banners, flags ---------- */
+/* paper-surface status washes */
+.pill{display:inline-block;font-family:var(--font-data);font-size:.7rem;font-weight:700;padding:2px 9px;border-radius:99px;background:var(--panel-2);color:var(--ink-2);border:1px solid var(--edge);vertical-align:middle}
+.pill.ok{background:rgba(91,112,85,.12);color:var(--sage-deep);border-color:rgba(91,112,85,.24)}
+.pill.warn{background:rgba(217,142,50,.12);color:var(--ochre-deep);border-color:rgba(217,142,50,.26)}
+.pill.bad{background:rgba(200,90,50,.12);color:var(--clay-deep);border-color:rgba(200,90,50,.26)}
+.pill.amber{background:rgba(217,142,50,.20);color:var(--ochre-deep);border-color:rgba(217,142,50,.30)}
+@media (prefers-color-scheme:dark){
+  .pill{background:var(--panel-2);color:var(--ink-2);border-color:var(--edge)}
+  .pill.ok{background:rgba(143,167,135,.14);color:var(--sage-deep);border-color:rgba(143,167,135,.30)}
+  .pill.warn{background:rgba(228,167,87,.14);color:var(--ochre-deep);border-color:rgba(228,167,87,.30)}
+  .pill.bad{background:rgba(200,90,50,.16);color:var(--clay-deep);border-color:rgba(200,90,50,.34)}
+  .pill.amber{background:rgba(228,167,87,.20);color:var(--ochre-deep);border-color:rgba(228,167,87,.36)}
+}
+.flash,.banner{border-radius:var(--r-soft);padding:12px 16px;margin-bottom:14px;border:1px solid var(--edge);background:var(--panel);box-shadow:var(--diffuse)}
+.flash.ok{background:var(--ok-bg);border-color:rgba(91,112,85,.4)} .flash.err,.banner.bad{background:var(--bad-bg);border-color:rgba(200,90,50,.42)} .banner.warn{background:var(--warn-bg);border-color:rgba(217,142,50,.42)}
+.banner.big{font-size:1.1rem;text-align:center}
+.lost{border-color:rgba(200,90,50,.6);border-width:2px;box-shadow:var(--diffuse)}
+.kv{display:grid;grid-template-columns:110px 1fr;gap:6px 12px;margin:0}
+.kv dt{color:var(--ink-2);font-size:.82rem;padding-top:2px;text-transform:capitalize} .kv dd{margin:0;word-break:break-word;font-family:var(--font-data)}
+.critical{color:var(--clay-deep);font-weight:700} .critical-note{color:var(--clay-deep)}
+.alert-panel{border-left:5px solid var(--clay)}
+.danger-zone{text-align:right;background:transparent;border-style:dashed;border-color:var(--edge-strong)}
+.label{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-2);margin:0}
+.owner{font-size:1.1rem;margin:2px 0 14px}
+
+/* ---------- 12. Tables & visits ---------- */
+.tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.t{width:100%;border-collapse:collapse;font-size:.9rem}
+table.t th{text-align:left;color:var(--ink-2);font-family:var(--font-data);font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.09em;padding:8px;border-bottom:1px solid var(--edge-strong)}
+table.t td{padding:10px 8px;border-bottom:1px solid var(--edge);vertical-align:top;font-variant-numeric:tabular-nums}
+/* ultra-subtle zebra, not stripes of colour */
+table.t tbody tr:nth-child(even){background:var(--row-tint)}
+tr.dim,.dim{opacity:.55}
+.visit{border-top:1px solid var(--edge);padding:12px 0} .visit p{margin:4px 0}
+.pager{display:flex;justify-content:center;gap:12px;align-items:center;margin-top:16px}
+
+/* ---------- 13. ID card + print ---------- */
+.idcard{display:flex;width:340px;max-width:100%;border:1px solid rgba(91,112,85,.55);border-radius:var(--r-b);overflow:hidden;background:var(--card-paper);color:var(--ink);margin:14px 0;box-shadow:var(--diffuse)}
+.idcard-left{flex:1;padding:14px;min-width:0} .idcard-left h2{margin:6px 0 0} .idcard-left p{margin:2px 0}
+.idcard-right{background:var(--panel-2);padding:12px;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.qr svg{width:120px;height:120px}
+
+/* ---------- 14. Motion calibration / reduced motion ---------- */
+.nav a{transition:color .15s ease,border-color .15s ease}
+.linkbtn{transition:color .15s ease,opacity .15s ease}
+.linkbtn:hover{color:var(--clay-deep)}
+
+@media (prefers-reduced-motion:reduce){
+  /* no translation, no breath pulse — surfaces still change, they just don't move */
+  .btn,.btn:hover,.btn:active,.btn.primary:hover,.btn.primary:active,
+  .btn.danger:hover,.btn.danger:active,
+  .card,.card:hover,.stat,.stat:hover,
+  .nav a,.pill,.chip,.linkbtn{
+    transition:none!important;
+    transform:none!important;
+  }
+  .pulse,.pulse.on{animation:none!important;opacity:1;transform:none!important}
+  .pulse.off{opacity:.6}
+  *{scroll-behavior:auto!important}
+}
+
+/* ---------- 15. Overlays / dialogs ---------- */
+/* ambient ink scrim, never a flat black curtain */
+.modal-scrim,.scrim{
+  position:fixed;inset:0;z-index:60;
+  background:var(--scrim);
+  -webkit-backdrop-filter:blur(3px) saturate(1.05);
+  backdrop-filter:blur(3px) saturate(1.05);
+}
+dialog.modal,dialog{
+  border:1px solid var(--edge);
+  border-radius:var(--r-a);
+  background:var(--panel);
+  color:var(--ink);
+  padding:20px;
+  width:min(520px,calc(100vw - 32px));
+  max-width:min(520px,calc(100vw - 32px));
+  max-height:calc(100dvh - 32px);
+  overflow:auto;
+  box-shadow:var(--diffuse-lift),var(--sheen);
+}
+dialog::backdrop{
+  background:var(--scrim);
+  -webkit-backdrop-filter:blur(3px) saturate(1.05);
+  backdrop-filter:blur(3px) saturate(1.05);
+}
+.modal-surface{
+  background:var(--panel);
+  border:1px solid var(--edge);
+  border-radius:var(--r-a);
+  box-shadow:var(--diffuse-lift),var(--sheen);
+  padding:20px;
+}
+
+/* ---------- 16. Scrollbars ---------- */
+*{scrollbar-width:thin;scrollbar-color:var(--scroll-thumb) transparent}
+.nav,.tablewrap,pre{scrollbar-width:thin;scrollbar-color:var(--scroll-thumb) transparent}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-corner{background:transparent}
+::-webkit-scrollbar-thumb{
+  background:var(--scroll-thumb);
+  border:3px solid transparent;
+  background-clip:content-box;
+  border-radius:99px;
+}
+::-webkit-scrollbar-thumb:hover{background:var(--scroll-thumb-hover);background-clip:content-box}
+
+/* ---------- 17. Responsive scale + touch targets ---------- */
+@media(max-width:640px){
+  /* the organic curve scales down with the canvas instead of overflowing it */
+  :root{
+    --r-a:16px 18px 17px 19px;
+    --r-b:19px 16px 18px 15px;
+    --r-c:17px 16px 19px 16px;
+    --r-soft:12px 13px 11px 12px;
+    --r-press:10px 12px 11px 12px;
+  }
+  .panel{padding:14px}
+  .wrap{padding:14px 12px 56px}
+  .grid2,.grid3{gap:12px}
+  .cards{gap:12px}
+  .stats{gap:10px}
+
+  /* 44px minimum tap targets */
+  .btn,.btn.small,.btn.big{min-height:44px;padding-left:16px;padding-right:16px}
+  .chip{min-height:44px;padding-left:14px;padding-right:14px}
+  .linkbtn{min-height:44px;display:inline-flex;align-items:center}
+  .nav a{min-height:44px;display:inline-flex;align-items:center}
+  .check{min-height:44px}
+  input:not([type=checkbox]):not([type=radio]),select,textarea{
+    min-height:44px;font-size:16px; /* 16px stops iOS zoom-on-focus */
+  }
+  input[type=checkbox],input[type=radio]{min-height:auto}
+
+  /* nothing escapes its container */
+  .card>*,.panel>*,.list li>*{min-width:0;max-width:100%}
+  .pet-name,.pet-name-sm,.owner,.kv dd{overflow-wrap:anywhere}
+  .kv{grid-template-columns:96px 1fr}
+  .idcard{width:100%}
+}
+
+@media print{
+  .top,.nav,.foot,.noprint,.flash,.modal-scrim,.scrim{display:none!important}
+  body{background:var(--print-paper)} body::before{display:none}
+  .wrap{padding:0} .idcard{break-inside:avoid}
+  table.t tbody tr:nth-child(even){background:transparent}
+  .panel,.card,.stat{box-shadow:none}
+}

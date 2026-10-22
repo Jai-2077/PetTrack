@@ -1,0 +1,25 @@
+# Render blueprint. A persistent disk needs a paid instance; on the free tier the database
+# is wiped on every redeploy/sleep (the laptop then re-uploads everything automatically).
+services:
+  - type: web
+    name: pettrack
+    runtime: python
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: python run.py
+    healthCheckPath: /api/health
+    disk:
+      name: pettrack-data
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: PETTRACK_MODE
+        value: cloud
+      - key: PETTRACK_DATA_DIR
+        value: /data
+      - key: PETTRACK_ADMIN_PASSWORD
+        sync: false
+      - key: PETTRACK_SYNC_KEY
+        generateValue: true
+      - key: PETTRACK_SECRET_KEY
+        generateValue: true

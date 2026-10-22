@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Offline{% endblock %}
+{% block wrapclass %}narrow{% endblock %}
+{% block content %}
+<section class="panel center">
+  <div class="logo">📡</div>
+  <h1>You're offline</h1>
+  <p class="muted">PetTrack couldn't reach the server. Pages you've already opened may still work. Try again when you have a connection.</p>
+  <p><button class="btn primary" type="button" data-reload>Retry</button></p>
+</section>
+{% endblock %}

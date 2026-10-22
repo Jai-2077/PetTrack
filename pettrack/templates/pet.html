@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% from '_m.html' import avatar, when, scan_time, csrf %}
+{% block title %}{{ pet.name }}{% endblock %}
+{% block content %}
+
+{% if pet.is_lost %}
+<div class="banner bad"><b>LOST PET.</b> The public tag page shows an alert{% if pet.lost_since %} (since {{ when(pet.lost_since) }}){% endif %}.
+  <form method="post" action="{{ url_for('main.pet_lost', uid=pet.uid) }}" class="inline">{{ csrf() }}<input type="hidden" name="action" value="found"><button class="btn small" type="submit">Mark as found</button></form></div>
+{% endif %}
+{% for r in reports %}
+<div class="banner warn"><b>Someone found {{ pet.name }}:</b>
+  {{ r.finder_name or 'Anonymous' }}{% if r.finder_phone %} · <a href="tel:{{ r.finder_phone }}">{{ r.finder_phone }}</a>{% endif %}
+  {% if r.location %} · {{ r.location }}{% endif %}{% if r.message %}<br>{{ r.message }}{% endif %}
+  <form method="post" action="{{ url_for('main.report_resolve', rid=r.id) }}" class="inline">{{ csrf() }}<button class="btn small" type="submit">Dismiss</button></form></div>
+{% endfor %}
+
+<section class="panel">
+  <div class="head">
+    {{ avatar(pet, 'lg') }}
+    <div class="grow">
+      <h1 class="pet-title">{{ pet.name }}</h1>
+      <p class="muted pet-sub">{{ pet.species }}{% if pet.breed %} · {{ pet.breed }}{% endif %} · {{ pet.gender }}{% if pet.birth_date %} · {{ pet.birth_date|age }}{% endif %}{% if pet.weight_kg %} · {{ pet.weight_kg }} kg{% endif %}{% if pet.color %} · {{ pet.color }}{% endif %}</p>
+      <p class="small muted pet-meta">Tag <code>{{ pet.uid }}</code></p>
+    </div>
+    <div class="actions">
+      <a class="btn" href="{{ url_for('main.pet_edit', uid=pet.uid) }}">Edit</a>
+      <a class="btn" href="{{ url_for('main.pet_card', uid=pet.uid) }}">Print card</a>
+      <a class="btn" href="{{ url_for('main.public_view', uid=pet.uid) }}" target="_blank" rel="noopener">Public page</a>
+    </div>
+  </div>
+</section>
+
+{% if pet.allergies or pet.conditions or pet.medications %}
+<section class="panel alert-panel">
+  <h2>Medical alerts</h2>
+  <dl class="kv">
+    {% if pet.allergies %}<dt>Allergies</dt><dd class="critical">{{ pet.allergies|nl2br }}</dd>{% endif %}
+    {% if pet.conditions %}<dt>Conditions</dt><dd>{{ pet.conditions|nl2br }}</dd>{% endif %}
+    {% if pet.medications %}<dt>Medications</dt><dd>{{ pet.medications|nl2br }}</dd>{% endif %}
+  </dl>
+</section>
+{% endif %}
+
+<div class="grid2">
+  <section class="panel">
+    <h2>Owner</h2>
+    <dl class="kv">
+      <dt>Name</dt><dd>{{ pet.owner_name }}</dd>
+      <dt>Phone</dt><dd><a href="tel:{{ pet.owner_phone }}">{{ pet.owner_phone }}</a></dd>
+      {% if pet.owner_email %}<dt>Email</dt><dd><a href="mailto:{{ pet.owner_email }}">{{ pet.owner_email }}</a></dd>{% endif %}
+      {% if pet.owner_city %}<dt>City</dt><dd>{{ pet.owner_city }}</dd>{% endif %}
+      {% if pet.owner_address %}<dt>Address</dt><dd>{{ pet.owner_address }}</dd>{% endif %}
+      {% if pet.vet_name %}<dt>Vet</dt><dd>{{ pet.vet_name }}</dd>{% endif %}
+    </dl>
+  </section>
+  <section class="panel">
+    <h2>Notes</h2>
+    <p>{{ pet.notes|nl2br if pet.notes else '—' }}</p>
+    {% if not pet.is_lost %}
+    <form method="post" action="{{ url_for('main.pet_lost', uid=pet.uid) }}" data-confirm="Mark {{ pet.name }} as lost? The public page will show an alert.">
+      {{ csrf() }}<input type="hidden" name="action" value="lost"><button class="btn danger small" type="submit">Report lost</button></form>
+    {% endif %}
+  </section>
+</div>
+
+<section class="panel" id="vaccinations">
+  <h2>Vaccinations</h2>
+  {% if vax %}
+  <div class="tablewrap"><table class="t">
+    <thead><tr><th>Vaccine</th><th>Given</th><th>Next due</th><th></th></tr></thead>
+    <tbody>
+    {% for v in vax %}
+      <tr class="{{ 'dim' if v.superseded }}">
+        <td>{{ v.vaccine }}{% if v.notes %}<div class="muted small">{{ v.notes }}</div>{% endif %}</td>
+        <td>{{ v.given_on }}</td>
+        <td>{{ v.next_due or '—' }} {% if v.status == 'overdue' %}<span class="pill bad">overdue</span>{% elif v.status == 'soon' %}<span class="pill warn">soon</span>{% elif v.status == 'ok' %}<span class="pill ok">ok</span>{% endif %}</td>
+        <td><form method="post" action="{{ url_for('main.vaccination_delete', rid=v.id) }}" data-confirm="Delete this vaccination entry?">{{ csrf() }}<button class="linkbtn" type="submit">Delete</button></form></td>
+      </tr>
+    {% endfor %}
+    </tbody></table></div>
+  {% else %}<p class="muted">No vaccinations logged.</p>{% endif %}
+  <details class="add"><summary class="btn small">Add vaccination</summary>
+    <form method="post" action="{{ url_for('main.vaccination_add', uid=pet.uid) }}" class="grid3">
+      {{ csrf() }}
+      <div class="field"><label>Vaccine *</label><input name="vaccine" required list="vaccines" placeholder="Rabies"></div>
+      <div class="field"><label>Given on *</label><input name="given_on" type="date" required max="{{ today }}"></div>
+      <div class="field"><label>Next due</label><input name="next_due" type="date"></div>
+      <div class="field span3"><label>Notes</label><input name="notes" maxlength="200"></div>
+      <div class="span3"><button class="btn primary" type="submit">Save vaccination</button></div>
+    </form>
+    <datalist id="vaccines"><option>Rabies</option><option>DHPP</option><option>Leptospirosis</option><option>Bordetella</option><option>Parvovirus</option><option>FVRCP</option><option>Feline leukemia</option></datalist>
+  </details>
+</section>
+
+<section class="panel" id="visits">
+  <h2>Vet visits</h2>
+  {% for v in visits %}
+  <article class="visit">
+    <div class="between"><b>{{ v.reason }}</b>
+      <form method="post" action="{{ url_for('main.visit_delete', rid=v.id) }}" data-confirm="Delete this visit?">{{ csrf() }}<button class="linkbtn" type="submit">Delete</button></form></div>
+    <div class="muted small">{{ v.visited_on }}{% if v.vet %} · {{ v.vet }}{% endif %}</div>
+    {% if v.notes %}<p>{{ v.notes|nl2br }}</p>{% endif %}
+  </article>
+  {% else %}<p class="muted">No visits logged.</p>{% endfor %}
+  <details class="add"><summary class="btn small">Log a visit</summary>
+    <form method="post" action="{{ url_for('main.visit_add', uid=pet.uid) }}" class="grid3">
+      {{ csrf() }}
+      <div class="field"><label>Date *</label><input name="visited_on" type="date" required max="{{ today }}"></div>
+      <div class="field"><label>Reason *</label><input name="reason" required maxlength="120" placeholder="Annual checkup"></div>
+      <div class="field"><label>Vet</label><input name="vet" maxlength="80"></div>
+      <div class="field span3"><label>Notes</label><textarea name="notes" rows="3" maxlength="1000"></textarea></div>
+      <div class="span3"><button class="btn primary" type="submit">Save visit</button></div>
+    </form>
+  </details>
+</section>
+
+<section class="panel">
+  <h2>Tag activity</h2>
+  {% if scans %}<ul class="list">{% for s in scans %}<li><span>{{ scan_time(s) }}</span><span class="pill">{{ s.source }}</span></li>{% endfor %}</ul>
+  <p class="small"><a href="{{ url_for('main.scans', uid=pet.uid) }}">All activity for this tag →</a></p>
+  {% else %}<p class="muted">No taps recorded.</p>{% endif %}
+</section>
+
+<section class="panel danger-zone">
+  <form method="post" action="{{ url_for('main.pet_delete', uid=pet.uid) }}" data-confirm="Delete {{ pet.name }} and all records? This syncs to the cloud.">
+    {{ csrf() }}<button class="btn danger small" type="submit">Delete pet</button></form>
+</section>
+{% endblock %}

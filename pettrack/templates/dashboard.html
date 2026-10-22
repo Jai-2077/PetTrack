@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% from '_m.html' import avatar, when, scan_time, csrf %}
+{% block title %}Home{% endblock %}
+{% block bodyattrs %}data-live-scan="{{ last_event }}"{% endblock %}
+{% block content %}
+
+{% if cfg.serial_enabled %}
+<section class="panel hero" id="live">
+  <div class="pulse" aria-hidden="true"></div>
+  <div>
+    <h1>Tap a collar tag</h1>
+    <p class="muted" id="live-text">Waiting for the scanner…</p>
+  </div>
+</section>
+{% endif %}
+
+<section class="panel">
+  <form method="post" action="{{ url_for('main.lookup') }}" class="row">
+    {{ csrf() }}
+    <input name="uid" placeholder="Look up by tag UID, e.g. 73A2232A" aria-label="Tag UID" autocomplete="off" style="text-transform:uppercase">
+    <button class="btn" type="submit">Look up</button>
+  </form>
+</section>
+
+<section class="stats">
+  <a class="stat" href="{{ url_for('main.pets') }}"><b>{{ stats.pets }}</b><span>pets</span></a>
+  <a class="stat {{ 'bad' if stats.lost }}" href="{{ url_for('main.pets', lost=1) }}"><b>{{ stats.lost }}</b><span>lost</span></a>
+  <a class="stat {{ 'bad' if stats.overdue }}" href="#due"><b>{{ stats.overdue }}</b><span>overdue vaccines</span></a>
+  <a class="stat {{ 'warn' if stats.soon }}" href="#due"><b>{{ stats.soon }}</b><span>due in 30 days</span></a>
+  <a class="stat {{ 'warn' if stats.reports }}" href="{{ url_for('main.reports') }}"><b>{{ stats.reports }}</b><span>finder reports</span></a>
+  <a class="stat" href="{{ url_for('main.sync_page') }}"><b>{{ stats.unsynced }}</b><span>unsynced</span></a>
+</section>
+
+{% if unregistered %}
+<section class="panel">
+  <h2>Unregistered tags</h2>
+  <p class="muted small">Seen by the scanner or SD log but not registered yet.</p>
+  <ul class="list">
+    {% for u in unregistered %}
+    <li><a href="{{ url_for('main.register', uid=u.uid) }}"><code>{{ u.uid }}</code><span class="muted"> · {{ u.n }} tap{{ 's' if u.n != 1 }} · last {{ when(u.last_seen) }}</span></a><span class="btn small">Register</span></li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+
+<section class="panel" id="due">
+  <h2>Vaccinations to watch</h2>
+  {% if due %}
+  <ul class="list">
+    {% for d in due %}
+    <li><a href="{{ url_for('main.pet', uid=d.pet_uid) }}#vaccinations"><b>{{ d.pet_name }}</b> · {{ d.vaccine }}</a>
+      <span class="pill {{ 'bad' if d.status == 'overdue' else 'warn' }}">{% if d.days < 0 %}{{ -d.days }} d overdue{% elif d.days == 0 %}due today{% else %}in {{ d.days }} d{% endif %}</span></li>
+    {% endfor %}
+  </ul>
+  {% else %}<p class="muted">All vaccinations up to date.</p>{% endif %}
+</section>
+
+<div class="grid2">
+  <section class="panel">
+    <h2>Recent pets</h2>
+    {% if pets %}<ul class="list">{% for p in pets %}
+      <li><a href="{{ url_for('main.pet', uid=p.uid) }}" class="who">{{ avatar(p, 'sm') }}<span><b class="pet-name-sm">{{ p.name }}</b><br><span class="muted small pet-sub">{{ p.species }} · {{ p.owner_name }}</span></span></a>{% if p.is_lost %}<span class="pill bad">LOST</span>{% endif %}</li>
+    {% endfor %}</ul>
+    {% else %}<p class="muted">No pets yet. Tap a tag to register the first one.</p>{% endif %}
+  </section>
+  <section class="panel">
+    <h2>Recent scans</h2>
+    {% if scans %}<ul class="list">{% for s in scans %}
+      <li><a href="{{ url_for('main.scan', uid=s.uid) }}"><b class="scan-name">{{ s.pet_name or s.uid }}</b><br><span class="muted small scan-meta">{{ scan_time(s) }} · {{ s.source }}</span></a></li>
+    {% endfor %}</ul>
+    <p class="small"><a href="{{ url_for('main.scans') }}">All scans →</a></p>
+    {% else %}<p class="muted">No scans yet.</p>{% endif %}
+  </section>
+</div>
+{% endblock %}
